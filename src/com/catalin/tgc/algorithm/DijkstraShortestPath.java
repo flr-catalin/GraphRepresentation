@@ -26,10 +26,10 @@ public class DijkstraShortestPath<V extends AbstractVertex> {
 	private LinkedList<V> unsettled;
 	
 	/** The adjacency list */
-	private AbstractAdjacencyList<V> adjacencyList;
+	protected AbstractAdjacencyList<V> adjacencyList;
 	
 	/** The distance map */
-	private Map<V, Integer> distanceMap;
+	protected Map<V, Integer> distanceMap;
 
 	/**
 	 * Instantiates a Dijkstra shortest path object.
@@ -50,8 +50,6 @@ public class DijkstraShortestPath<V extends AbstractVertex> {
 		nullCheck(fromVertex);
 		
 		unsettled.add(fromVertex);
-		
-		distanceMap.putIfAbsent(fromVertex, 0);
 		
 		while (settled.size() != adjacencyList.getVertices().size()) {
 			V vertex = unsettled.remove();
@@ -97,6 +95,17 @@ public class DijkstraShortestPath<V extends AbstractVertex> {
 		if (Objects.isNull(vertex)) {
 			throw new IllegalArgumentException("null value not allowed.");
 		}
+	}
+	
+	/**
+	 * Same as execute, but first resets the instance.
+	 */
+	protected void executeInternal(V vertex) {
+		this.settled = new HashSet<>();
+		this.unsettled = new LinkedList<>();
+		this.distanceMap = new HashMap<>();
+		
+		execute(vertex);
 	}
 	
 }

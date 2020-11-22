@@ -1,8 +1,11 @@
 package com.catalin.tgc;
 
+import java.util.Set;
+
 import com.catalin.tgc.adjacency.UndirectedAdjacencyList;
 import com.catalin.tgc.adjacency.vertex.AbstractVertex;
 import com.catalin.tgc.adjacency.vertex.UnweightedVertex;
+import com.catalin.tgc.algorithm.CenterAndPeripheryFinder;
 import com.catalin.tgc.algorithm.DijkstraShortestPath;
 
 /**
@@ -13,6 +16,8 @@ import com.catalin.tgc.algorithm.DijkstraShortestPath;
 public class Demo {
 	
 	public static void main(String[] args) {
+		
+		// Create the graph.
 		UndirectedAdjacencyList<UnweightedVertex> adjacencyList = new UndirectedAdjacencyList<>(UnweightedVertex.class);
 		
 		adjacencyList.addVertex("A");
@@ -35,6 +40,7 @@ public class Demo {
 		adjacencyList.addEdge("E", "H");
 		adjacencyList.addEdge("G", "H");
 		
+		// Print the adjacency list.
 	    System.out.println("Adjacency List:");
 	    for (UnweightedVertex vertex : adjacencyList.getVertices()) {
 	    	System.out.print(vertex.getLabel().concat(": "));
@@ -45,12 +51,37 @@ public class Demo {
 		}
 	    System.out.println();
 
-	    System.out.println("Dijkstra's Shortest Path:");
+	    // Print the shortest distances from "B" to every vertex
 	    DijkstraShortestPath<UnweightedVertex> dijkstraShortestPath = new DijkstraShortestPath<UnweightedVertex>(adjacencyList);
-	    dijkstraShortestPath.execute(adjacencyList.getVertex("A"));
+	    System.out.println("Dijkstra's Shortest Path:");
+	    dijkstraShortestPath.execute(adjacencyList.getVertex("B"));
 	    for (UnweightedVertex vertex : adjacencyList.getVertices()) {
-			System.out.println(vertex.getLabel() + ": " + dijkstraShortestPath.getDistanceTo(vertex));
+			Integer distanceTo = dijkstraShortestPath.getDistanceTo(vertex);
+			if (distanceTo == null) {
+				continue;
+			}
+			
+			System.out.println(vertex.getLabel() + ": " + distanceTo);
 		}
+	    System.out.println();
+
+	    // Print the center of the graph.
+	    CenterAndPeripheryFinder<UnweightedVertex> finder = new CenterAndPeripheryFinder<>(adjacencyList);
+	    System.out.println("Center: ");
+	    Set<UnweightedVertex> center = finder.findCenter();
+	    for (UnweightedVertex vertex : center) {
+			System.out.print(vertex.getLabel() + " ");
+		}
+	    System.out.println("\n");
+	    
+	    // Print the periphery of the graph.
+	    System.out.println("Periphery:");
+	    Set<UnweightedVertex> periphery = finder.findPeriphery();
+	    for (UnweightedVertex vertex : periphery) {
+			System.out.print(vertex.getLabel() + " ");
+		}
+	    System.out.println("\n");
+	    
 	}
 
 }
